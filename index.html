@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Toolbar</title>
+    <link rel="stylesheet" href="style/font-awesome.min.css">
+    <link rel="stylesheet" href="style/custom-icons.css">
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+<div class="main-container">
+    <header></header>
+    <main>
+        <aside id="toolbar">
+            <div class="tool">
+                <button class="tool-trigger" id="btn-hand">
+                    <i class="fa fa-hand-paper-o" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="tool">
+                <button class="tool-trigger" id="btn-flag">
+                    <i class="icon-flag" aria-hidden="true"></i>
+                </button>
+                <div class="tool-content">
+                    <header>
+                        <span>Tool Flag</span>
+                        <i class="fa fa-close btn-close"></i>
+                    </header>
+                    <ul>
+                        <li><a href="#">item 1</a></li>
+                        <li><a href="#">item 2</a></li>
+                        <li><a href="#">item 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tool">
+                <button class="tool-trigger" id="btn-circle">
+                    <i class="icon-circle" aria-hidden="true"></i>
+                </button>
+                <div class="tool-content">
+                    <header>
+                        <span>Tool Circle</span>
+                        <i class="fa fa-close btn-close"></i>
+                    </header>
+                    <ul>
+                        <li><a href="#">item 1</a></li>
+                        <li><a href="#">item 2</a></li>
+                        <li><a href="#">item 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tool">
+                <button class="tool-trigger" id="btn-rectangle">
+                    <i class="icon-rectangle" aria-hidden="true"></i>
+                </button>
+                <div class="tool-content">
+                    <header>
+                        <span>Tool Rectangle</span>
+                        <i class="fa fa-close btn-close"></i>
+                    </header>
+                    <ul>
+                        <li><a href="#">item 1</a></li>
+                        <li><a href="#">item 2</a></li>
+                        <li><a href="#">item 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tool">
+                <button class="tool-trigger" id="btn-polygon">
+                    <i class="icon-polygon" aria-hidden="true"></i>
+                </button>
+                <div class="tool-content">
+                    <header>
+                        <span>Tool Polygon</span>
+                        <i class="fa fa-close btn-close"></i>
+                    </header>
+                    <ul>
+                        <li><a href="#">item 1</a></li>
+                        <li><a href="#">item 2</a></li>
+                        <li><a href="#">item 3</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tool">
+                <button class="tool-trigger" id="btn-line">
+                    <i class="icon-line" aria-hidden="true"></i>
+                </button>
+                <div class="tool-content">
+                    <header>
+                        <span>Tool Line</span>
+                        <i class="fa fa-close btn-close"></i>
+                    </header>
+                    <ul>
+                        <li><a href="#">item 1</a></li>
+                        <li><a href="#">item 2</a></li>
+                        <li><a href="#">item 3</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+        <section>
+            <div class="map" id="map"></div>
+        </section>
+    </main>
+    <footer></footer>
+</div>
+<script  async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvQYK-Rx0WEIX-wp5gOT7Dmj1a6XAo4Sk&center=-25.457956316328378,-49.28590051295168&zoom=1&format=png&maptype=roadmap&style=feature:administrative%7Celement:geometry%7Cvisibility:off&style=feature:poi%7Cvisibility:off&style=feature:road%7Celement:labels.icon%7Cvisibility:off&style=feature:transit%7Cvisibility:off&size=480x360&callback=initMap&libraries=drawing"></script>
+
+
+<script src="./bundle.js" charset="utf-8"></script>
+
+</body>
+</html>

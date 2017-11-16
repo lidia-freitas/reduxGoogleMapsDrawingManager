@@ -1,0 +1,163 @@
+*{
+    box-sizing: border-box;
+}
+
+html, body{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+    align-items: center;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+
+.main-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-container header{
+    width: 100%;
+    height: 70px;
+    background: #66c9ce;
+}
+
+.main-container main{
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    display: flex;
+}
+
+.main-container main aside{
+    width: 40px;
+    height: 100%;
+    background: #cccccc;
+    position: relative;
+    z-index: 2;
+}
+
+.main-container main section{
+    height: 100%;
+    flex-grow: 1;
+    background: #ffeba2;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    position: relative;
+    z-index: 1;
+}
+
+.main-container footer{
+    width: 100%;
+    height: 40px;
+    background: #66c9ce;
+}
+
+.map{
+    width: 100%;
+    height: 100%;
+}
+
+.tool{
+    position: relative;
+}
+
+.tool .tool-trigger{
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    background: #ccc;
+    color: #007cc2;
+    border: none;
+    -webkit-appearance: none;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tool .tool-content{
+    position: absolute;
+    top: 5px;
+    left: 60px;
+    width: 200px;
+    box-shadow: 0 0 4px 2px #d2d2d2;
+    display: none;
+}
+
+.tool .tool-content header{
+    height: 30px;
+    background: #007cc2;
+    padding: 0 5px;
+    text-align: center;
+    line-height: 30px;
+    color: #fff;
+    font-weight: bold;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.tool .tool-content header span{
+    flex-grow: 1;
+}
+
+.tool .tool-content header i{
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.tool .tool-content header:before{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 0;
+    bottom: 0;
+    left: -6px;
+    margin: auto;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right:6px solid #007cc2;
+}
+
+.tool .tool-content ul{
+    background: #f1f1f1;
+    margin: 0;
+    padding: 20px;
+    list-style-type: none;
+}
+
+.tool .tool-content ul li{
+    line-height: 30px;
+    font-size: 12px;
+    border-bottom: 1px solid #ccc;
+
+}
+
+.tool .tool-content ul li a{
+    text-decoration: none;
+    color: #007cc2;
+}
+
+/* ==== STATES ==== */
+.tool.active .tool-content{
+    display: block;
+}
+
+.tool.active .tool-trigger{
+    background: #007cc2;
+    color: #ccc;
+}
