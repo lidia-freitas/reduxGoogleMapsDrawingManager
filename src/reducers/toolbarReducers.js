@@ -19,14 +19,15 @@ const toolReducer = (state, action) => {
 };
 
 
-// // TOOLBAR REDUCER
+// TOOLBAR REDUCER
 export const toolbarReducer = (state, action) => {
 
     let nextState = Object.assign([], state);
 
     switch (action.type) {
         case 'TOGGLE_TOOL':
-            return nextState.map(t => toolReducer(t, action));
+            nextState = nextState.map(t => toolReducer(t, action));
+            return nextState;
             break;
         default:
             return nextState;

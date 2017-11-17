@@ -1,8 +1,3 @@
-// export const toggleTool = (i) => {
-//     return {type: 'TOGGLE_TOOL', id: i}
-// };
-//
-
 function toggleTool(i) {
     return {type: 'TOGGLE_TOOL', id: i}
 }
@@ -23,7 +18,7 @@ function toggleToolRectangle() {
     return {type: 'TOGGLE_TOOL', id: 3}
 }
 
-function toggleToolPoligon() {
+function toggleToolPolygon() {
     return {type: 'TOGGLE_TOOL', id: 4}
 }
 
@@ -32,4 +27,12 @@ function toggleToolLine() {
 }
 
 
-export { toggleTool, clearAll, toggleToolFlag, toggleToolCircle, toggleToolRectangle, toggleToolPoligon, toggleToolLine}
+export {
+    toggleTool,
+    clearAll,
+    toggleToolFlag,
+    toggleToolCircle,
+    toggleToolRectangle,
+    toggleToolPolygon,
+    toggleToolLine
+}
