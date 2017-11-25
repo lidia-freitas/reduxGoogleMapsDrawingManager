@@ -12,12 +12,14 @@ import {
     toggleToolLine,
 } from "./actions/toolbarActions";
 
-import {addItem, removeItem} from "./actions/mapsActions";
+import {addItem, removeItem, clearAllItems, setSelectedItem} from "./actions/mapsActions";
 import {bindShortcuts, mousetrap, Mousetrap} from 'redux-shortcuts';
 import {googleMapsApiLoader} from './google-maps-loader/google-maps-api-loader';
 
 
 const elementMap = document.getElementById('map');
+const listFloatButtons = document.getElementById('float-buttons');
+let map, drawingManager, google;
 
 googleMapsApiLoader({libraries: ['drawing'], apiKey: 'AIzaSyCvQYK-Rx0WEIX-wp5gOT7Dmj1a6XAo4Sk'})
     .then(createMap)
@@ -25,7 +27,6 @@ googleMapsApiLoader({libraries: ['drawing'], apiKey: 'AIzaSyCvQYK-Rx0WEIX-wp5gOT
         console.log(err);
     });
 
-let map, drawingManager, google;
 
 function createMap(googleApi) {
     google = googleApi;
@@ -45,7 +46,7 @@ function createMap(googleApi) {
             fillColor: '#ffff00',
             fillOpacity: 1,
             strokeWeight: 5,
-            clickable: false,
+            clickable: true,
             editable: true,
             zIndex: 1
         }
@@ -53,11 +54,16 @@ function createMap(googleApi) {
 
     drawingManager.setMap(map);
 
-    google.maps.event.addListener(drawingManager, 'circlecomplete', function(circle) {
+    google.maps.event.addListener(drawingManager, 'circlecomplete', function (circle) {
+        google.maps.event.addListener(circle, 'click', function (ev) {
+            store.dispatch(setSelectedItem(this))
+        });
+
         store.dispatch(addItem(circle));
     });
 
     render();
+    clearIsVisible();
 }
 
 
@@ -105,7 +111,6 @@ const initialState = {
     mapsReducer: {
         circles: []
     }
-
 };
 
 const app = combineReducers({toolbarReducer, mapsReducer});
@@ -136,7 +141,34 @@ function render() {
     }
 }
 
+function clearIsVisible() {
+    let state = store.getState();
+
+    let btnClearAll = listFloatButtons.children[0];
+    let btnClearOne = listFloatButtons.children[1];
+
+    if (state.mapsReducer.circles.length > 0) {
+        btnClearAll.style.visibility = 'visible';
+    } else {
+        btnClearAll.style.visibility = 'hidden';
+    }
+
+    if (state.mapsReducer.circles.some(item => item.selected)) {
+        btnClearOne.style.visibility = 'visible';
+        state.mapsReducer.circles.forEach(item => {
+            if(item.selected){
+
+            }else{
+
+            }
+        })
+    } else {
+        btnClearOne.style.visibility = 'hidden';
+    }
+}
+
 store.subscribe(render);
+store.subscribe(clearIsVisible);
 
 
 //ACTIONS
@@ -155,7 +187,6 @@ for (let i = 0; i < closeBtns.length; i++) {
 }
 
 
-
 bindShortcuts(
     [['ctrl+a'], toggleToolFlag, true],
     [['ctrl+s'], toggleToolCircle, true],
@@ -165,22 +196,15 @@ bindShortcuts(
     [['esc'], clearAll, true],
 )(store.dispatch);
 
+let btnClearAll = listFloatButtons.children[0];
+let btnClearSelected = listFloatButtons.children[1];
 
+btnClearSelected.addEventListener('click', () => {
+    let item = store.getState().mapsReducer.circles.find(item => item.selected);
+    store.dispatch(removeItem(item));
+});
 
-
-
-// // VISIBILITY REDUCER
-// const visibilityFilter = (state = 'SHOW_ALL', action) => {
-//     switch (action.type) {
-//         case 'SET_VISIBILITY_FILTER':
-//             return action.filter;
-//         default:
-//             return state;
-//     }
-// };
-//STORE
-// const toolBarApp = combineReducers({toolbar, visibilityFilter});
-// const store = createStore(toolBarApp);
-
-
+btnClearAll.addEventListener('click', () => {
+   store.dispatch(clearAllItems());
+});
 

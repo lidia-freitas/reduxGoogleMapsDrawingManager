@@ -69,6 +69,12 @@ body{
     height: 100%;
 }
 
+.float-buttons{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
 .tool{
     position: relative;
 }
