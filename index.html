@@ -12,12 +12,12 @@
     <header></header>
     <main>
         <aside id="toolbar">
-            <div class="tool">
+            <div class="tool" data-drawingMode="null">
                 <button class="tool-trigger" id="btn-hand">
                     <i class="fa fa-hand-paper-o" aria-hidden="true"></i>
                 </button>
             </div>
-            <div class="tool">
+            <div class="tool" data-drawingMode="MARKER">
                 <button class="tool-trigger" id="btn-flag">
                     <i class="icon-flag" aria-hidden="true"></i>
                 </button>
@@ -33,7 +33,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="tool">
+            <div class="tool" data-drawingMode="CIRCLE">
                 <button class="tool-trigger" id="btn-circle">
                     <i class="icon-circle" aria-hidden="true"></i>
                 </button>
@@ -49,7 +49,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="tool">
+            <div class="tool" data-drawingMode="RECTANGLE">
                 <button class="tool-trigger" id="btn-rectangle">
                     <i class="icon-rectangle" aria-hidden="true"></i>
                 </button>
@@ -65,7 +65,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="tool">
+            <div class="tool" data-drawingMode="POLYGON">
                 <button class="tool-trigger" id="btn-polygon">
                     <i class="icon-polygon" aria-hidden="true"></i>
                 </button>
@@ -81,7 +81,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="tool">
+            <div class="tool" data-drawingMode="POLYLINE">
                 <button class="tool-trigger" id="btn-line">
                     <i class="icon-line" aria-hidden="true"></i>
                 </button>
@@ -103,8 +103,8 @@
         <section>
             <div class="map" id="map"></div>
             <div id="float-buttons" class="float-buttons">
-                <button class="clear-circles">clear all</button>
-                <button class="clear-selected-circles">clear selected</button>
+                <button class="clear-all" id="btn-clear-all">clear all</button>
+                <button class="clear-selected" id="btn-clear-selected">clear selected</button>
             </div>
         </section>
     </main>

@@ -1,7 +1,7 @@
-import {createStore, applyMiddleware, combineReducers} from 'redux';
-import {logger} from 'redux-logger';
-import {toolbarReducer} from "./reducers/toolbarReducers";
-import {mapsReducer} from "./reducers/mapsRecucers";
+import {myStore} from "./store";
+import {Toolbar} from "./components/Toolbar";
+import {Tool} from "./components/Tool";
+
 import {
     toggleTool,
     clearAll,
@@ -14,178 +14,26 @@ import {
 
 import {addItem, removeItem, clearAllItems, setSelectedItem} from "./actions/mapsActions";
 import {bindShortcuts, mousetrap, Mousetrap} from 'redux-shortcuts';
-import {googleMapsApiLoader} from './google-maps-loader/google-maps-api-loader';
+import {FloatingButton} from "./components/FloatingButton";
+import {googleMapsApiLoader} from "./utils/google-maps-loader/google-maps-api-loader";
+import {Map} from "./components/Map";
+import {FloatingButtonsHolder} from "./components/FloatingButtonsHolder";
 
 
-const elementMap = document.getElementById('map');
-const listFloatButtons = document.getElementById('float-buttons');
-let map, drawingManager, google;
+//////// init toolbar
+const myToolbar = new Toolbar(document.getElementById('toolbar'));
+let idx = 0;
 
-googleMapsApiLoader({libraries: ['drawing'], apiKey: 'AIzaSyCvQYK-Rx0WEIX-wp5gOT7Dmj1a6XAo4Sk'})
-    .then(createMap)
-    .catch((err) => {
-        console.log(err);
-    });
+for (let item of myToolbar.HtmlElement.querySelectorAll('div.tool')) {
+    let tool = new Tool(idx, item);
+    let triggerBtn = tool.htmlElement.querySelectorAll('button')[0];
+    let closeBtn = tool.htmlElement.getElementsByClassName('btn-close')[0];
 
-
-function createMap(googleApi) {
-    google = googleApi;
-
-    map = new google.maps.Map(elementMap, {
-        zoom: 15,
-        center: new google.maps.LatLng(-25.466822, -49.274068)
-    });
-
-    drawingManager = new google.maps.drawing.DrawingManager({
-        drawingControl: false,
-        drawingControlOptions: {
-            drawingModes: ['marker', 'circle', 'polygon', 'polyline', 'rectangle']
-        },
-        markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
-        circleOptions: {
-            fillColor: '#ffff00',
-            fillOpacity: 1,
-            strokeWeight: 5,
-            clickable: true,
-            editable: true,
-            zIndex: 1
-        }
-    });
-
-    drawingManager.setMap(map);
-
-    google.maps.event.addListener(drawingManager, 'circlecomplete', function (circle) {
-        google.maps.event.addListener(circle, 'click', function (ev) {
-            store.dispatch(setSelectedItem(this))
-        });
-
-        store.dispatch(addItem(circle));
-    });
-
-    render();
-    clearIsVisible();
+    triggerBtn.addEventListener('click', () => myStore.dispatch(toggleTool(tool.id)));
+    if (closeBtn) closeBtn.addEventListener('click', () => myStore.dispatch(clearAll()));
+    myToolbar.toolsList.push(tool);
+    idx++;
 }
-
-
-const toolbarElement = document.getElementById('toolbar');
-
-const initialState = {
-    toolbarReducer: [
-        {
-            id: 0,
-            text: 'reset',
-            active: true,
-            drawingMode: null
-        },
-        {
-            id: 1,
-            text: 'flag',
-            active: false,
-            drawingMode: 'MARKER'
-        },
-        {
-            id: 2,
-            text: 'circle',
-            active: false,
-            drawingMode: 'CIRCLE'
-        },
-        {
-            id: 3,
-            text: 'rectangle',
-            active: false,
-            drawingMode: 'RECTANGLE'
-        },
-        {
-            id: 4,
-            text: 'polygon',
-            active: false,
-            drawingMode: 'POLYGON'
-        },
-        {
-            id: 5,
-            text: 'line',
-            active: false,
-            drawingMode: 'POLYLINE'
-        }
-    ],
-    mapsReducer: {
-        circles: []
-    }
-};
-
-const app = combineReducers({toolbarReducer, mapsReducer});
-const store = createStore(app, initialState, applyMiddleware(logger));
-
-function render() {
-    let state = store.getState();
-    let inactiveCount = 0;
-
-    for (let i = 0; i < toolbarElement.childElementCount; i++) {
-        if (state.toolbarReducer[i].active) {
-            toolbarElement.children[i].classList.add('active');
-            toolbarElement.children[i].getElementsByTagName('button')[0].focus();
-            if (state.toolbarReducer[i].id === 0) {
-                drawingManager.setDrawingMode(state.toolbarReducer[i].drawingMode);
-            } else {
-                drawingManager.setDrawingMode(google.maps.drawing.OverlayType[state.toolbarReducer[i].drawingMode]);
-            }
-        } else {
-            inactiveCount++;
-            toolbarElement.children[i].classList.remove('active');
-            toolbarElement.children[i].getElementsByTagName('button')[0].blur();
-        }
-
-        if (inactiveCount === toolbarElement.childElementCount) {
-            drawingManager.setDrawingMode(null);
-        }
-    }
-}
-
-function clearIsVisible() {
-    let state = store.getState();
-
-    let btnClearAll = listFloatButtons.children[0];
-    let btnClearOne = listFloatButtons.children[1];
-
-    if (state.mapsReducer.circles.length > 0) {
-        btnClearAll.style.visibility = 'visible';
-    } else {
-        btnClearAll.style.visibility = 'hidden';
-    }
-
-    if (state.mapsReducer.circles.some(item => item.selected)) {
-        btnClearOne.style.visibility = 'visible';
-        state.mapsReducer.circles.forEach(item => {
-            if(item.selected){
-
-            }else{
-
-            }
-        })
-    } else {
-        btnClearOne.style.visibility = 'hidden';
-    }
-}
-
-store.subscribe(render);
-store.subscribe(clearIsVisible);
-
-
-//ACTIONS
-for (let i = 0; i < toolbarElement.childElementCount; i++) {
-    toolbarElement.children[i].getElementsByTagName('button')[0].addEventListener('click', () => {
-        store.dispatch(toggleTool(i))
-    })
-}
-
-let closeBtns = document.getElementsByClassName('btn-close');
-
-for (let i = 0; i < closeBtns.length; i++) {
-    closeBtns[i].addEventListener('click', () => {
-        store.dispatch(clearAll());
-    })
-}
-
 
 bindShortcuts(
     [['ctrl+a'], toggleToolFlag, true],
@@ -194,17 +42,76 @@ bindShortcuts(
     [['ctrl+f'], toggleToolPolygon, true],
     [['ctrl+g'], toggleToolLine, true],
     [['esc'], clearAll, true],
-)(store.dispatch);
+)(myStore.dispatch);
 
-let btnClearAll = listFloatButtons.children[0];
-let btnClearSelected = listFloatButtons.children[1];
+myStore.subscribe(myToolbar.render);
+myToolbar.render();
 
-btnClearSelected.addEventListener('click', () => {
-    let item = store.getState().mapsReducer.circles.find(item => item.selected);
-    store.dispatch(removeItem(item));
+//////// init maps
+const myMap = new Map();
+
+googleMapsApiLoader({libraries: ['drawing'], apiKey: 'AIzaSyCvQYK-Rx0WEIX-wp5gOT7Dmj1a6XAo4Sk'})
+    .then(function (google) {
+        myMap.map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
+            center: new google.maps.LatLng(-25.466822, -49.274068)
+        });
+
+        myMap.drawingManager = new google.maps.drawing.DrawingManager({
+            drawingControl: false,
+            drawingControlOptions: {
+                drawingModes: ['marker', 'circle', 'polygon', 'polyline', 'rectangle']
+            },
+            markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
+            circleOptions: {
+                fillColor: '#ffff00',
+                fillOpacity: 1,
+                strokeWeight: 5,
+                clickable: true,
+                editable: true,
+                zIndex: 1
+            }
+        });
+
+        myMap.drawingManager.setMap(myMap.map);
+
+        google.maps.event.addListener(myMap.drawingManager, 'circlecomplete', function (circle) {
+            circle.id = myMap.circleList.length;
+            myMap.circleList.push(circle);
+            myStore.dispatch(addItem({id: circle.id, selected: false}));
+
+            google.maps.event.addListener(circle, 'click', function (ev) {
+                myStore.dispatch(setSelectedItem({id: circle.id}))
+            });
+
+        });
+
+        myStore.subscribe(myMap.render);
+        myMap.render();
+
+    }).catch((err) => {
+    console.log(err)
 });
 
-btnClearAll.addEventListener('click', () => {
-   store.dispatch(clearAllItems());
+//////// init floating buttons
+const floatingBtnHolder = new FloatingButtonsHolder(document.getElementById('float-buttons'));
+const btnClearAll = new FloatingButton(document.getElementById('btn-clear-all'), 'btnClearAll');
+const btnClearSelected = new FloatingButton(document.getElementById('btn-clear-selected'), 'btnClearSelected');
+
+btnClearAll.htmlElement.addEventListener('click', () => {
+    myStore.dispatch(clearAllItems());
 });
+
+btnClearSelected.htmlElement.addEventListener('click', () => {
+    let item = myStore.getState().mapsReducer.circles.find(item => item.selected);
+    myStore.dispatch(removeItem(item));
+});
+
+floatingBtnHolder.btnList.push(btnClearAll);
+floatingBtnHolder.btnList.push(btnClearSelected);
+
+myStore.subscribe(floatingBtnHolder.render);
+floatingBtnHolder.render();
+
+
 
