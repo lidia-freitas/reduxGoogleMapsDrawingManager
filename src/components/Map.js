@@ -11,7 +11,7 @@ export class Map {
         let state = myStore.getState();
 
         let toolSelected = state.toolbarReducer.find(item => item.active);
-        let mapElementSelected = state.mapsReducer.circles.find(item => item.selected);
+        let mapElementSelected = state.mapsReducer.circles.filter(item => item.selected);
 
         if (!toolSelected) {
             this.drawingManager.setDrawingMode(null);
@@ -21,13 +21,21 @@ export class Map {
             this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType[toolSelected.drawingMode]);
         }
 
-        this.circleList.forEach(item => {
-            if (!mapElementSelected || item.id !== mapElementSelected.id) {
-                item.setOptions({fillColor: '#FFFF00'});
-            } else if (item.id === mapElementSelected.id) {
-                item.setOptions({fillColor: '#00FF00'});
-            }
-        });
+        if (mapElementSelected.length > 0) {
+            mapElementSelected.forEach(item => {
+                if (event && event.ctrlKey) {
+                    (this.circleList.find(i => i.id === item.id)).setOptions({fillColor: '#00FF00'});
+                } else {
+                    this.circleList.forEach(i => {
+                        i.setOptions({fillColor: i.id === item.id ? '#00FF00' : '#FFFF00'});
+                    })
+                }
+            });
+        } else {
+            this.circleList.forEach(i => {
+                i.setOptions({fillColor: '#FFFF00'});
+            })
+        }
 
         this.circleList = this.circleList.filter(item => {
             let found = state.mapsReducer.circles.find(i => i.id === item.id);
@@ -36,7 +44,6 @@ export class Map {
             } else {
                 item.setMap(null);
             }
-
         })
 
     }

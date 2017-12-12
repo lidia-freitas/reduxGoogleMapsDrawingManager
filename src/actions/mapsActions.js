@@ -3,21 +3,26 @@ function addItem(item) {
     return {type: 'ADD_ITEM', item: item}
 }
 
-function removeItem(item) {
-    return { type: 'REMOVE_ITEM', item: item}
+function removeSelectedItems() {
+    return { type: 'REMOVE_SELECTED_ITEMS'}
+}
+
+function removeAllItems() {
+    return {type: 'REMOVE_ALL_ITEMS'}
 }
 
 function setSelectedItem(item) {
     return {type: 'SET_SELECTED_ITEM', item: item}
 }
-
-function clearAllItems() {
-    return {type: 'CLEAR_ALL_ITEMS'}
+function setSelectedMultiItem(item) {
+    return {type: 'SET_SELECTED_MULTI_ITEM', item: item}
 }
+
 
 export {
     addItem,
-    removeItem,
-    clearAllItems,
-    setSelectedItem
+    removeSelectedItems,
+    removeAllItems,
+    setSelectedItem,
+    setSelectedMultiItem
 }

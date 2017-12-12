@@ -2,40 +2,58 @@ export const mapsReducer = (state, action) => {
     let nextState = Object.assign({}, state);
     switch (action.type) {
         case 'ADD_ITEM':
-            nextState.circles = [...nextState.circles, action.item];
+            nextState.circles = elementAddReducer(nextState.circles, action);
             return nextState;
             break;
-        case 'REMOVE_ITEM':
-            nextState.circles = [...nextState.circles.filter(item => {
-                if (item.id !== action.item.id) {
-                    return item
-                }
-            })
-            ];
+        case 'REMOVE_SELECTED_ITEMS':
+            nextState.circles = nextState.circles.filter(item => !item.selected);
             return nextState;
             break;
+        case 'REMOVE_ALL_ITEMS':
+            nextState.circles = [];
+            return nextState;
         case 'SET_SELECTED_ITEM':
-            nextState.circles = [...nextState.circles.map(item => {
-                if (item.id !== action.item.id) {
-                    item.selected = false;
-                } else {
-                    item.selected = !item.selected;
-                }
-
-                return item;
-            })];
-
+            nextState.circles = nextState.circles.map(elem => setItemSelectedReducer(elem, action));
             return nextState;
-        case 'CLEAR_ALL_ITEMS':
-            let count = nextState.circles.length;
-
-            while (count > 0) {
-                nextState.circles = [...nextState.circles.slice(1)];
-                count--;
-            }
-
+        case 'SET_SELECTED_MULTI_ITEM':
+            nextState.circles = nextState.circles.map(elem => setMultiItemSelectedReducer(elem, action));
             return nextState;
         default:
             return nextState;
     }
 };
+
+function elementAddReducer(array, action) {
+    let newArray = array.slice();
+    newArray.splice(newArray.length, 0, action.item);
+    return newArray;
+}
+
+function setItemSelectedReducer(state, action) {
+    if (state.id !== action.item.id) {
+        return {
+            ...state,
+            selected: false
+        };
+    } else {
+        return {
+            ...state,
+            selected: !state.selected
+        };
+    }
+}
+
+function setMultiItemSelectedReducer(state, action) {
+    if (state.id === action.item.id) {
+        return {
+            ...state,
+            selected: true
+        }
+    } else {
+        return {
+            ...state
+        }
+    }
+}
+
+

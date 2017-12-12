@@ -12,7 +12,7 @@ import {
     toggleToolLine,
 } from "./actions/toolbarActions";
 
-import {addItem, removeItem, clearAllItems, setSelectedItem} from "./actions/mapsActions";
+import {addItem, removeSelectedItems, removeAllItems, setSelectedItem, setSelectedMultiItem} from "./actions/mapsActions";
 import {bindShortcuts, mousetrap, Mousetrap} from 'redux-shortcuts';
 import {FloatingButton} from "./components/FloatingButton";
 import {googleMapsApiLoader} from "./utils/google-maps-loader/google-maps-api-loader";
@@ -42,7 +42,11 @@ bindShortcuts(
     [['ctrl+f'], toggleToolPolygon, true],
     [['ctrl+g'], toggleToolLine, true],
     [['esc'], clearAll, true],
+    [['right'], function () {
+        console.log('artificial click')
+    }, true]
 )(myStore.dispatch);
+
 
 myStore.subscribe(myToolbar.render);
 myToolbar.render();
@@ -80,8 +84,12 @@ googleMapsApiLoader({libraries: ['drawing'], apiKey: 'AIzaSyCvQYK-Rx0WEIX-wp5gOT
             myMap.circleList.push(circle);
             myStore.dispatch(addItem({id: circle.id, selected: false}));
 
-            google.maps.event.addListener(circle, 'click', function (ev) {
-                myStore.dispatch(setSelectedItem({id: circle.id}))
+            google.maps.event.addListener(circle, 'click', function (e) {
+                if (event.ctrlKey) {
+                    myStore.dispatch(setSelectedMultiItem({id: circle.id}))
+                } else {
+                    myStore.dispatch(setSelectedItem({id: circle.id}))
+                }
             });
 
         });
@@ -99,12 +107,11 @@ const btnClearAll = new FloatingButton(document.getElementById('btn-clear-all'),
 const btnClearSelected = new FloatingButton(document.getElementById('btn-clear-selected'), 'btnClearSelected');
 
 btnClearAll.htmlElement.addEventListener('click', () => {
-    myStore.dispatch(clearAllItems());
+    myStore.dispatch(removeAllItems());
 });
 
 btnClearSelected.htmlElement.addEventListener('click', () => {
-    let item = myStore.getState().mapsReducer.circles.find(item => item.selected);
-    myStore.dispatch(removeItem(item));
+    myStore.dispatch(removeSelectedItems());
 });
 
 floatingBtnHolder.btnList.push(btnClearAll);
