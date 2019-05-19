@@ -54,7 +54,7 @@ myToolbar.render();
 //////// init maps
 const myMap = new Map();
 
-googleMapsApiLoader({libraries: ['drawing'], apiKey: 'AIzaSyCvQYK-Rx0WEIX-wp5gOT7Dmj1a6XAo4Sk'})
+googleMapsApiLoader({libraries: ['drawing'], apiKey: 'AIzaSyCchrcsUMNE1sEAPOAk01jDyC-WvGtbZhQ'})
     .then(function (google) {
         myMap.map = new google.maps.Map(document.getElementById('map'), {
             zoom: 15,
